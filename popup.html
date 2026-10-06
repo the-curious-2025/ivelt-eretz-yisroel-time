@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <title>&#x05D4;&#x05D2;&#x05D3;&#x05E8;&#x05D5;&#x05EA; &#x05E9;&#x05E2;&#x05D5;&#x05DF;</title>
+  <style>
+    body {
+      font-family: system-ui, "Segoe UI", Arial, sans-serif;
+      font-size: 14px;
+      width: 300px;
+      margin: 0;
+      padding: 14px 16px;
+      color: #222;
+      background: #fff;
+    }
+    h1 { font-size: 16px; margin: 0 0 12px; }
+    label.field { display: block; margin-bottom: 12px; }
+    label.field span { display: block; margin-bottom: 4px; color: #555; }
+    select { width: 100%; padding: 4px; font-size: 14px; direction: ltr; }
+    fieldset { border: 1px solid #ddd; border-radius: 6px; margin: 0 0 12px; padding: 8px 10px; }
+    legend { color: #555; padding: 0 4px; }
+    .opt { display: flex; align-items: center; gap: 6px; padding: 3px 0; cursor: pointer; }
+    .opt bdi { direction: ltr; unicode-bidi: isolate; }
+    .row { display: flex; justify-content: space-between; align-items: center; }
+    button { font-size: 13px; padding: 4px 10px; cursor: pointer; }
+    #status { color: #2a7a2a; font-size: 13px; min-height: 1em; }
+  </style>
+</head>
+<body>
+  <h1>&#x05E9;&#x05E2;&#x05D5;&#x05DF; &#x05D1;&#x05E4;&#x05D5;&#x05E8;&#x05D5;&#x05DD;</h1>
+
+  <label class="field">
+    <span>&#x05D4;&#x05E9;&#x05E2;&#x05D5;&#x05DF; &#x05E9;&#x05DC; &#x05D4;&#x05E4;&#x05D5;&#x05E8;&#x05D5;&#x05DD;</span>
+    <select id="sourceTz"></select>
+  </label>
+
+  <label class="field">
+    <span>&#x05DC;&#x05D4;&#x05E6;&#x05D9;&#x05D2; &#x05DC;&#x05E4;&#x05D9; &#x05E9;&#x05E2;&#x05D5;&#x05DF;</span>
+    <select id="targetTz"></select>
+  </label>
+
+  <fieldset id="format">
+    <legend>&#x05EA;&#x05E6;&#x05D5;&#x05D2;&#x05D4;</legend>
+  </fieldset>
+
+  <div class="row">
+    <button id="reset">&#x05D1;&#x05E8;&#x05D9;&#x05E8;&#x05EA; &#x05DE;&#x05D7;&#x05D3;&#x05DC;</button>
+    <span id="status"></span>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

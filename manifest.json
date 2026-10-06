@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "ivelt Eretz Yisroel Time",
+  "version": "0.1.0",
+  "version_name": "0.1.0 beta",
+  "description": "Shows post dates and times on ivelt in Eretz Yisroel time instead of New York time.",
+  "permissions": ["storage"],
+  "icons": {
+    "16": "icons/16.png",
+    "32": "icons/32.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "action": {
+    "default_title": "ivelt Eretz Yisroel Time",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16.png",
+      "32": "icons/32.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://ivelt.com/*", "*://*.ivelt.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ]
+}
