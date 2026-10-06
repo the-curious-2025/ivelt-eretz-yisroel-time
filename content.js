@@ -9,7 +9,10 @@
 (() => {
   'use strict';
 
-  const DEFAULTS = { sourceTz: 'America/New_York', targetTz: 'Asia/Jerusalem', format: 'weekday' };
+  // The forum always runs on New York time. Keep in sync with popup.js.
+  const SOURCE_TZ = 'America/New_York';
+  const TARGETS = { 'Asia/Jerusalem': 'Eretz Yisroel time', 'Europe/London': 'London time' };
+  const DEFAULTS = { sourceTz: SOURCE_TZ, targetTz: 'Asia/Jerusalem', format: 'weekday' };
   let cfg = { ...DEFAULTS };
   const DONE = 'data-ey-time';
   const ORIG = 'data-ey-orig';
@@ -74,8 +77,7 @@
     }
   }
   function targetLabel() {
-    if (cfg.targetTz === 'Asia/Jerusalem') return 'Eretz Yisroel time';
-    return cfg.targetTz.split('/').pop().replace(/_/g, ' ');
+    return TARGETS[cfg.targetTz];
   }
 
   // ---------- text parsing ----------
@@ -223,7 +225,7 @@
     if (!parent || parent.closest(SKIP) || parent.closest('time[datetime]')) return;
 
     // Footer note like "All times are UTC-05:00".
-    const tz = cfg.sourceTz === DEFAULTS.sourceTz && SRC_TZ_RE.exec(v);
+    const tz = SRC_TZ_RE.exec(v);
     if (tz) {
       replacePart(node, tz.index, tz.index + tz[0].length, targetLabel());
       return;
@@ -262,13 +264,10 @@
   }
 
   function applySettings(stored) {
-    cfg = { ...DEFAULTS, ...stored };
-    try {
-      buildFormatter();
-    } catch (e) { // unknown time zone name
-      cfg = { ...DEFAULTS };
-      buildFormatter();
-    }
+    cfg = { ...DEFAULTS, ...stored, sourceTz: SOURCE_TZ };
+    // Older versions allowed any zone; fall back if the saved one isn't offered anymore.
+    if (!TARGETS[cfg.targetTz]) cfg.targetTz = DEFAULTS.targetTz;
+    buildFormatter();
   }
 
   function start() {

@@ -16,10 +16,9 @@ This is a beta, so if something looks off, please open an issue.
 
 ## Settings
 
-Click the extension icon in the toolbar. You can change:
+Click the extension icon in the toolbar. You can pick:
 
-- the forum's time zone (New York by default)
-- the time zone to show dates in (Eretz Yisroel by default)
+- whether dates show in Eretz Yisroel time (the default) or London time
 - how the date looks: with the day of the week, date and time, time first, or 12-hour with AM/PM
 
 Changes save on their own and show up right away in any open forum tab.

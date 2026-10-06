@@ -1,32 +1,11 @@
 'use strict';
 
-// Keep in sync with DEFAULTS in content.js.
-const DEFAULTS = { sourceTz: 'America/New_York', targetTz: 'Asia/Jerusalem', format: 'weekday' };
+// Keep in sync with TARGETS and DEFAULTS in content.js.
+const TARGETS = ['Asia/Jerusalem', 'Europe/London'];
+const DEFAULTS = { targetTz: 'Asia/Jerusalem', format: 'weekday' };
 
 const $ = id => document.getElementById(id);
-
-function zones(extra) {
-  let list = [];
-  try { list = Intl.supportedValuesOf('timeZone'); } catch (e) { /* older browser */ }
-  for (const z of extra) if (!list.includes(z)) list.push(z);
-  return list.filter(z => z !== 'Israel').sort();
-}
-
-function zoneLabel(z) {
-  if (z === 'Asia/Jerusalem') return 'Eretz Yisroel (Jerusalem)';
-  return z.replace(/_/g, ' ');
-}
-
-function fillZones(select, selected) {
-  select.innerHTML = '';
-  for (const z of zones([DEFAULTS.sourceTz, DEFAULTS.targetTz, selected])) {
-    const o = document.createElement('option');
-    o.value = z;
-    o.textContent = zoneLabel(z);
-    select.append(o);
-  }
-  select.value = selected;
-}
+const checked = name => document.querySelector(`input[name=${name}]:checked`).value;
 
 // Same output as formatTarget() in content.js, used for the preview.
 function sample(format, tz) {
@@ -50,20 +29,14 @@ function sample(format, tz) {
 }
 
 function current() {
-  const checked = document.querySelector('input[name=format]:checked');
-  return {
-    sourceTz: $('sourceTz').value,
-    targetTz: $('targetTz').value,
-    format: checked ? checked.value : DEFAULTS.format
-  };
+  return { targetTz: checked('targetTz'), format: checked('format') };
 }
 
 function render(cfg) {
-  fillZones($('sourceTz'), cfg.sourceTz);
-  fillZones($('targetTz'), cfg.targetTz);
-  const radio = document.querySelector(`input[name=format][value="${cfg.format}"]`) ||
-    document.querySelector('input[name=format]');
-  radio.checked = true;
+  for (const name of ['targetTz', 'format']) {
+    (document.querySelector(`input[name=${name}][value="${cfg[name]}"]`) ||
+      document.querySelector(`input[name=${name}]`)).checked = true;
+  }
   renderPreview();
 }
 
@@ -86,6 +59,7 @@ function save() {
 }
 
 chrome.storage.sync.get(DEFAULTS, cfg => {
+  if (!TARGETS.includes(cfg.targetTz)) cfg.targetTz = DEFAULTS.targetTz;
   render(cfg);
   document.addEventListener('change', () => { renderPreview(); save(); });
   $('reset').addEventListener('click', () => { render(DEFAULTS); save(); });
