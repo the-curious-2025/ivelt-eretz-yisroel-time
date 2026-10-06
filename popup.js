@@ -2,7 +2,6 @@
 
 // Keep in sync with DEFAULTS in content.js.
 const DEFAULTS = { sourceTz: 'America/New_York', targetTz: 'Asia/Jerusalem', format: 'weekday' };
-const FORMATS = ['weekday', 'date', 'timeFirst', 'ampm'];
 
 const $ = id => document.getElementById(id);
 
@@ -29,7 +28,7 @@ function fillZones(select, selected) {
   select.value = selected;
 }
 
-// Same output as formatTarget() in content.js, used for the examples.
+// Same output as formatTarget() in content.js, used for the preview.
 function sample(format, tz) {
   const f = new Intl.DateTimeFormat('he-IL', {
     timeZone: tz, weekday: 'short', day: '2-digit', month: '2-digit',
@@ -50,30 +49,6 @@ function sample(format, tz) {
   }
 }
 
-function fillFormats(selected, tz) {
-  const box = $('format');
-  box.querySelectorAll('.opt').forEach(el => el.remove());
-  for (const f of FORMATS) {
-    const label = document.createElement('label');
-    label.className = 'opt';
-    const input = document.createElement('input');
-    input.type = 'radio';
-    input.name = 'format';
-    input.value = f;
-    input.checked = f === selected;
-    const text = document.createElement('bdi');
-    text.textContent = sample(f, tz);
-    label.append(input, text);
-    box.append(label);
-  }
-}
-
-function render(cfg) {
-  fillZones($('sourceTz'), cfg.sourceTz);
-  fillZones($('targetTz'), cfg.targetTz);
-  fillFormats(cfg.format, cfg.targetTz);
-}
-
 function current() {
   const checked = document.querySelector('input[name=format]:checked');
   return {
@@ -83,27 +58,35 @@ function current() {
   };
 }
 
-let statusTimer = null;
-function save(cfg) {
-  chrome.storage.sync.set(cfg, () => {
-    $('status').textContent = '\u05E0\u05E9\u05DE\u05E8';
-    clearTimeout(statusTimer);
-    statusTimer = setTimeout(() => { $('status').textContent = ''; }, 1500);
+function render(cfg) {
+  fillZones($('sourceTz'), cfg.sourceTz);
+  fillZones($('targetTz'), cfg.targetTz);
+  const radio = document.querySelector(`input[name=format][value="${cfg.format}"]`) ||
+    document.querySelector('input[name=format]');
+  radio.checked = true;
+  renderPreview();
+}
+
+function renderPreview() {
+  const cfg = current();
+  $('preview').textContent = sample(cfg.format, cfg.targetTz);
+}
+
+let savedTimer;
+function save() {
+  const saved = $('saved');
+  chrome.storage.sync.set(current(), () => {
+    const err = chrome.runtime && chrome.runtime.lastError;
+    saved.textContent = err ? 'Could not save: ' + err.message : 'Saved';
+    saved.classList.toggle('error', !!err);
+    saved.classList.add('show');
+    clearTimeout(savedTimer);
+    savedTimer = setTimeout(() => saved.classList.remove('show'), err ? 6000 : 1200);
   });
 }
 
 chrome.storage.sync.get(DEFAULTS, cfg => {
   render(cfg);
-
-  $('sourceTz').addEventListener('change', () => save(current()));
-  $('targetTz').addEventListener('change', () => {
-    const cfg = current();
-    fillFormats(cfg.format, cfg.targetTz);
-    save(cfg);
-  });
-  $('format').addEventListener('change', () => save(current()));
-  $('reset').addEventListener('click', () => {
-    render(DEFAULTS);
-    save({ ...DEFAULTS });
-  });
+  document.addEventListener('change', () => { renderPreview(); save(); });
+  $('reset').addEventListener('click', () => { render(DEFAULTS); save(); });
 });
