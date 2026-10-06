@@ -19,6 +19,7 @@ This is a beta, so if something looks off, please open an issue.
 Click the extension icon in the toolbar. You can pick:
 
 - whether dates show in Eretz Yisroel time (the default) or London time
+- "Forum default", which leaves the dates exactly as the forum shows them, in New York time. Handy if you're in New York for a while and don't want to uninstall anything. One click and you're back.
 - how the date looks: with the day of the week, date and time, time first, or 12-hour with AM/PM
 
 Changes save on their own and show up right away in any open forum tab.

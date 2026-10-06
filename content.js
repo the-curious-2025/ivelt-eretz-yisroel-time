@@ -12,6 +12,8 @@
   // The forum always runs on New York time. Keep in sync with popup.js.
   const SOURCE_TZ = 'America/New_York';
   const TARGETS = { 'Asia/Jerusalem': 'Eretz Yisroel time', 'Europe/London': 'London time' };
+  // "Forum default": leave the forum's own New York times alone.
+  const ORIGINAL = 'original';
   const DEFAULTS = { sourceTz: SOURCE_TZ, targetTz: 'Asia/Jerusalem', format: 'weekday' };
   let cfg = { ...DEFAULTS };
   const DONE = 'data-ey-time';
@@ -237,6 +239,7 @@
   }
 
   function scan(root) {
+    if (cfg.targetTz === ORIGINAL) return;
     if (root.nodeType === Node.TEXT_NODE) { handleText(root); return; }
     if (root.nodeType !== Node.ELEMENT_NODE) return;
     if (root.matches('time[datetime]')) handleTime(root);
@@ -266,8 +269,8 @@
   function applySettings(stored) {
     cfg = { ...DEFAULTS, ...stored, sourceTz: SOURCE_TZ };
     // Older versions allowed any zone; fall back if the saved one isn't offered anymore.
-    if (!TARGETS[cfg.targetTz]) cfg.targetTz = DEFAULTS.targetTz;
-    buildFormatter();
+    if (cfg.targetTz !== ORIGINAL && !TARGETS[cfg.targetTz]) cfg.targetTz = DEFAULTS.targetTz;
+    if (cfg.targetTz !== ORIGINAL) buildFormatter();
   }
 
   function start() {

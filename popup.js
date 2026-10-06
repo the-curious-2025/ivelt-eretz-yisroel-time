@@ -1,7 +1,8 @@
 'use strict';
 
 // Keep in sync with TARGETS and DEFAULTS in content.js.
-const TARGETS = ['Asia/Jerusalem', 'Europe/London'];
+const ORIGINAL = 'original'; // "Forum default": no conversion
+const TARGETS = ['Asia/Jerusalem', 'Europe/London', ORIGINAL];
 const DEFAULTS = { targetTz: 'Asia/Jerusalem', format: 'weekday' };
 
 const $ = id => document.getElementById(id);
@@ -42,7 +43,11 @@ function render(cfg) {
 
 function renderPreview() {
   const cfg = current();
-  $('preview').textContent = sample(cfg.format, cfg.targetTz);
+  const off = cfg.targetTz === ORIGINAL;
+  $('original-note').hidden = !off;
+  $('format-section').classList.toggle('off', off);
+  // With "Forum default" the preview still shows the chosen format, for when it's turned back on.
+  $('preview').textContent = sample(cfg.format, off ? DEFAULTS.targetTz : cfg.targetTz);
 }
 
 let savedTimer;

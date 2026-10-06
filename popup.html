@@ -54,6 +54,8 @@
   .seg label:has(input:focus-visible) { outline: 2px solid var(--muted); outline-offset: 1px; }
 
   .note { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+  .note[hidden] { display: none; }
+  #format-section.off .seg, #format-section.off .note { opacity: .45; pointer-events: none; }
   .note bdi { color: var(--ink); }
 
   .link { background: none; border: 0; padding: 0; margin-top: 10px; font: inherit; font-size: 12px; color: var(--muted); text-decoration: underline; cursor: pointer; }
@@ -74,10 +76,12 @@
     <div class="seg" role="radiogroup">
       <label><input type="radio" name="targetTz" value="Asia/Jerusalem">Eretz Yisroel</label>
       <label><input type="radio" name="targetTz" value="Europe/London">London</label>
+      <label><input type="radio" name="targetTz" value="original">Forum default</label>
     </div>
+    <p class="note" id="original-note" hidden>Dates show as they are on the forum, in New York time. Handy when you're in New York for a while.</p>
   </section>
 
-  <section>
+  <section id="format-section">
     <h2>Date format</h2>
     <div class="seg" role="radiogroup">
       <label><input type="radio" name="format" value="weekday">Weekday</label>
